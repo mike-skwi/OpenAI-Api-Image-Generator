@@ -1,23 +1,30 @@
 import './style.css'
-import typescriptLogo from './typescript.svg'
-import { setupCounter } from './counter'
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const form = document.querySelector('form');
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+form?.addEventListener('Submit', async (e) => {
+  // this will prevent the page from refreshing
+  e.preventDefault();
+  const data = new FormData(form);
+
+  const response = await fetch('http://localhost:8080/dream', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      prompt: data.get('prompt'),
+    }),
+  });
+
+  const { image } = await response.json();
+
+  const result = document.querySelector('#result');
+  if (result !== null) {
+    result.innerHTML = `<img src="${image}" width="512" />`;
+  }
+  else {
+    throw('No result, an error has occured');
+  }
+
+});
