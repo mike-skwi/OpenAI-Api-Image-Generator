@@ -31,5 +31,5 @@ app.post('/dream', async (req, res) => {
     res.send({ image });
 });
 
-app.listen(8080, () => console.log('hmm'));
+app.listen(8080, () => console.log('Server Running'));
 
